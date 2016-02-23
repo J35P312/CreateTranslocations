@@ -1,8 +1,8 @@
-chromosomes=chr18,chr20
-homozygozity_rate=0.5
-min_dist=100000
-balanced_inter_chromosomal_translocations=300,2000,100000,0.5
-unbalanced_inter_chromosomal_translocations=300,2000,100000,0.5
-inversions=100,2000,100000
-deletions=300,2000,100000
-tandem_duplications=100,2000,100000
+chromosomes=virus
+homozygozity_rate=1
+min_dist=0
+balanced_inter_chromosomal_translocations=0,2000,100000,0.5
+unbalanced_inter_chromosomal_translocations=0,2000,100000,0.5
+inversions=1,2000,2001
+deletions=0,2000,100000
+tandem_duplications=0,2000,100000

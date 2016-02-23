@@ -169,14 +169,17 @@ def main(args):
             for variants in sorted(collapsed_variants[chromosome], key=operator.itemgetter(2)):
                 #the db events must be written in lexiographic order(otherwise BND event will cause problems)
                 if variants[0] <= variants[1]:
-                    output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[3]),"1",variants[5]])+"\n")
                     #each translocation have 2 breakpoints
                     if(variants[5] == "BND"):
-                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[4][1]),"1",variants[5]])+"\n")
+                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[2]),str(variants[3]),str(variants[3]),"1",variants[5]])+"\n")
+                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[2]),str(variants[4][1]),str(variants[4][1]),"1",variants[5]])+"\n")
+                    else:
+                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[3]),str(variants[2]),str(variants[3]),"1",variants[5]])+"\n")
                 else:
-                    output_db.write( "\t".join([variants[1],variants[0],str(variants[3]),str(variants[2]),"1",variants[5]])+"\n")
                     if(variants[5] == "BND"):
-                        output_db.write( "\t".join([variants[1],variants[0],str(variants[4][1]),str(variants[2]),"1",variants[5]])+"\n")
+                        output_db.write( "\t".join([variants[1],variants[0],str(variants[3]),str(variants[3]),str(variants[2]),str(variants[2]),"1",variants[5]])+"\n")
+                        output_db.write( "\t".join([variants[1],variants[0],str(variants[4][1]),str(variants[4][1]),str(variants[2]),str(variants[2]),"1",variants[5]])+"\n")
+                    
                 a=1
     del collapsed_variants
 
