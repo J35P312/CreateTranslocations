@@ -22,6 +22,7 @@ balanced_inter_chromosomal_translocations=300,2000,100000,0.5
 unbalanced_inter_chromosomal_translocations=300,2000,100000,0.5
 
 number of variants, minimum size, and maximum size
+
 inversions=100,2000,100000
 
 deletions=300,2000,100000
