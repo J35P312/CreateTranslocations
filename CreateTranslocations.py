@@ -75,7 +75,7 @@ def generate_variant_lists(data,chromosome_length):
             structural_variant=[[chromosome,chromosomeB,startA,startB,[startA,endB,invert],"BND"]]
             #if the variant is a balanced translocation, a deletion is generated on chromosome B       
             if variant_type == "balanced_inter_chromosomal_translocations":
-                structural_variant += [[chromosomeB,chromosomeB,startB,endB,1,"DEL"]]
+                structural_variant += [[chromosomeB,chromosomeB,startB,endB,"1","DEL"]]
  
             #the FT database stores variants according to lexiographic order
             if(chromosome > chromosomeB):
@@ -88,7 +88,7 @@ def generate_variant_lists(data,chromosome_length):
                 var ="INV"
             elif variant_type is "tandem_duplications":
                 var="TDUP"
-            structural_variant=[[chromosome,chromosome,posA,posA+length,1,var]]
+            structural_variant=[[chromosome,chromosome,posA,posA+length,"1",var]]
         #make sure that the variant do not overlap any other variant
         if homozygous:
             overlap=check_overlap(structural_variant,genome[0],data["min_distance"])
@@ -171,14 +171,14 @@ def main(args):
                 if variants[0] <= variants[1]:
                     #each translocation have 2 breakpoints
                     if(variants[5] == "BND"):
-                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[2]),str(variants[3]),str(variants[3]),"1",variants[5]])+"\n")
-                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[2]),str(variants[4][1]),str(variants[4][1]),"1",variants[5]])+"\n")
+                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[2]),str(variants[3]),str(variants[3]),variants[5],"1"])+"\n")
+                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[2]),str(variants[4][1]),str(variants[4][1]),variants[5],"1"])+"\n")
                     else:
-                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[3]),str(variants[2]),str(variants[3]),"1",variants[5]])+"\n")
+                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[3]),str(variants[2]),str(variants[3]),variants[5],"1"])+"\n")
                 else:
                     if(variants[5] == "BND"):
-                        output_db.write( "\t".join([variants[1],variants[0],str(variants[3]),str(variants[3]),str(variants[2]),str(variants[2]),"1",variants[5]])+"\n")
-                        output_db.write( "\t".join([variants[1],variants[0],str(variants[4][1]),str(variants[4][1]),str(variants[2]),str(variants[2]),"1",variants[5]])+"\n")
+                        output_db.write( "\t".join([variants[1],variants[0],str(variants[3]),str(variants[3]),str(variants[2]),str(variants[2]),variants[5],"1"])+"\n")
+                        output_db.write( "\t".join([variants[1],variants[0],str(variants[4][1]),str(variants[4][1]),str(variants[2]),str(variants[2]),"1",variants[5],"1"])+"\n")
                     
                 a=1
     del collapsed_variants
