@@ -37,7 +37,7 @@ os.remove(args.prefix+"_haplotype_1_r1.fq");os.remove(args.prefix+"_haplotype_2_
 os.system("cat " + args.prefix+"_haplotype_1_r2.fq" +" " + args.prefix+"_haplotype_2_r2.fq" + " > " + args.prefix+"_r2.fq")
 os.remove(args.prefix+"_haplotype_1_r2.fq");os.remove(args.prefix+"_haplotype_2_r2.fq")
 #mapping using bwa
-command=["bwa mem -Y -t " + args.threads + " -R \'@RG\\tID:CreateTranslocations\\tSM:WGSIM\' "+args.fa+" "+ args.prefix+"_r1.fq " + args.prefix+"_r2.fq > " + args.prefix+".sam"]
+command=["bwa mem -t " + args.threads + " -R \'@RG\\tID:CreateTranslocations\\tSM:WGSIM\' "+args.fa+" "+ args.prefix+"_r1.fq " + args.prefix+"_r2.fq > " + args.prefix+".sam"]
 print(command)
 tmp=subprocess.check_output(command, shell = True);
 #use samtools view to convert sam to bam

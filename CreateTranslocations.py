@@ -16,7 +16,7 @@ def check_overlap(structural_variant,haplotype,min_distance):
         for variant in haplotype[event[0]]:
             if variant[1] == event[1]:
                 #the added variant must be positioned min_distance or greater from all variants within the haplotype
-                if (abs(variant[2]-event[3]) < min_distance) and (abs(variant[3]-event[2]) < min_distance ):
+                if (abs(variant[2]-event[3]) < min_distance) or (abs(variant[3]-event[2]) < min_distance ):
                     overlap=True
 
                 #the added variant should not overlap any variant within the haplotype
@@ -76,10 +76,6 @@ def generate_variant_lists(data,chromosome_length):
             #if the variant is a balanced translocation, a deletion is generated on chromosome B       
             if variant_type == "balanced_inter_chromosomal_translocations":
                 structural_variant += [[chromosomeB,chromosomeB,startB,endB,"1","DEL"]]
- 
-            #the FT database stores variants according to lexiographic order
-            if(chromosome > chromosomeB):
-                chromosome=chromosomeB
         else:
             posA=random.randint(0, chromosome_length[chromosome])
             length=random.randint(data[variant_type][1], data[variant_type][2])
@@ -178,7 +174,7 @@ def main(args):
                 else:
                     if(variants[5] == "BND"):
                         output_db.write( "\t".join([variants[1],variants[0],str(variants[3]),str(variants[3]),str(variants[2]),str(variants[2]),variants[5],"1"])+"\n")
-                        output_db.write( "\t".join([variants[1],variants[0],str(variants[4][1]),str(variants[4][1]),str(variants[2]),str(variants[2]),"1",variants[5],"1"])+"\n")
+                        output_db.write( "\t".join([variants[1],variants[0],str(variants[4][1]),str(variants[4][1]),str(variants[2]),str(variants[2]),variants[5],"1"])+"\n")
                     
                 a=1
     del collapsed_variants
@@ -200,19 +196,19 @@ def main(args):
                     if variant[-1] == "DEL":
                         #deletion, skip the sequence between start and stop
                         pass
-                    elif variant[-1] == "INV":
-                        #inversion, add the inverted sequnce between start and stop to the genom
-                        genome += invert_sequence(sequence[chromosome][start:end])
+                    #elif variant[-1] == "INV":
+                    #    #inversion, add the inverted sequnce between start and stop to the genom
+                    #    genome += invert_sequence(sequence[chromosome][start:end])
                     elif variant[-1] == "TDUP":
                         #tdup, add an extra copy of start-stop directly after the first copy
                         genome += sequence[chromosome][start:end]
                         genome += sequence[chromosome][start:end]
                     elif variant[-1] == "BND":
                         #add a segment of chromosome b to chromosome a, the segment may be inverted
-                        if not variant[4][-1]:              
-                            genome += sequence[variant[1]][variant[3]:variant[4][1]]
-                        else:
-                            genome +=invert_sequence(sequence[variant[1]][variant[3]:variant[4][1]])
+                        #if not variant[4][-1]:              
+                        genome += sequence[variant[1]][variant[3]:variant[4][1]]
+                        #else:
+                        #    genome +=invert_sequence(sequence[variant[1]][variant[3]:variant[4][1]])
                         end=start
                     if(len(genome) > 500):                
                         output_fa.write(genome+"\n")
