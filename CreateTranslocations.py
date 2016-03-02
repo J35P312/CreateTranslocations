@@ -25,7 +25,7 @@ def check_overlap(structural_variant,haplotype,min_distance):
     return(overlap)
 
 #generate a list containing the variants
-def generate_variant_lists(data,chromosome_length):
+def generate_variant_lists(data,chromosome_length,sequence):
     n_chomosomes=len(data["chromosomes"])
     number_of_variants =0;
     number_of_variants += data["balanced_inter_chromosomal_translocations"][0]
@@ -64,14 +64,44 @@ def generate_variant_lists(data,chromosome_length):
             if(random.random() < data[variant_type][-1]):
                 invert=1
             #first select the position of chromosomeA
-            startA=random.randint(0, chromosome_length[chromosome])           
+            startA=random.randint(0, chromosome_length[chromosome])
+            
+            testPos=startA-5000;
+            if testPos <1:
+                testPos=1
+            testEnd=startA+5000
+            if testEnd > len(sequence)-1:
+                testEnd=len(sequence)-1
+            if "N" in sequence[chromosome][testPos:testEnd]:    
+                continue
+                 
             #then select the region on chromosome B
             chromosomeB=chromosome
             while chromosomeB == chromosome:
                 chromosomeB=random.choice(data["chromosomes"])
             startB=random.randint(0, chromosome_length[chromosomeB])
+            
+            testPos=startB-5000;
+            if testPos <1:
+                testPos=1
+            testEnd=startB+5000
+            if testEnd > len(sequence)-1:
+                testEnd=len(sequence)-1
+            if "N" in sequence[chromosomeB][testPos:testEnd]:    
+                continue
+            
             length=random.randint(data[variant_type][1], data[variant_type][2])
             endB=startB+length-1
+            
+            testPos=endB-5000;
+            if testPos <1:
+                testPos=1
+            testEnd=endB+5000
+            if testEnd > len(sequence)-1:
+                testEnd=len(sequence)-1
+            if "N" in sequence[chromosomeB][testPos:testEnd]:    
+                continue
+            
             structural_variant=[[chromosome,chromosomeB,startA,startB,[startA,endB,invert],"BND"]]
             #if the variant is a balanced translocation, a deletion is generated on chromosome B       
             if variant_type == "balanced_inter_chromosomal_translocations":
@@ -158,7 +188,7 @@ def main(args):
             simulated_bases += len(sequence[content[0]])
     del split_reference
     #generate the variants
-    haplotypes,collapsed_variants=generate_variant_lists(data,chromosome_len)
+    haplotypes,collapsed_variants=generate_variant_lists(data,chromosome_len,sequence)
     #print the generated variants to prefix.db
     with open(prefix+'.db', 'w') as output_db:
         for chromosome in sorted(collapsed_variants):
