@@ -70,9 +70,9 @@ def generate_variant_lists(data,chromosome_length,sequence):
             if testPos <1:
                 testPos=1
             testEnd=startA+5000
-            if testEnd > len(sequence)-1:
-                testEnd=len(sequence)-1
-            if "N" in sequence[chromosome][testPos:testEnd]:    
+            if testEnd > len(sequence[chromosome])-1:
+                testEnd=len(sequence[chromosome])-1
+            if "N" in sequence[chromosome][testPos:testEnd] or "n" in sequence[chromosome][testPos:testEnd]:    
                 continue
                  
             #then select the region on chromosome B
@@ -85,9 +85,9 @@ def generate_variant_lists(data,chromosome_length,sequence):
             if testPos <1:
                 testPos=1
             testEnd=startB+5000
-            if testEnd > len(sequence)-1:
-                testEnd=len(sequence)-1
-            if "N" in sequence[chromosomeB][testPos:testEnd]:    
+            if testEnd > len(sequence[chromosomeB])-1:
+                testEnd=len(sequence[chromosomeB])-1
+            if "N" in sequence[chromosomeB][testPos:testEnd] or "n" in sequence[chromosomeB][testPos:testEnd]:    
                 continue
             
             length=random.randint(data[variant_type][1], data[variant_type][2])
@@ -97,8 +97,8 @@ def generate_variant_lists(data,chromosome_length,sequence):
             if testPos <1:
                 testPos=1
             testEnd=endB+5000
-            if testEnd > len(sequence)-1:
-                testEnd=len(sequence)-1
+            if testEnd > len(sequence[chromosomeB])-1:
+                testEnd=len(sequence[chromosomeB])-1
             if "N" in sequence[chromosomeB][testPos:testEnd]:    
                 continue
             
