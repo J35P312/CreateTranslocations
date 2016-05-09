@@ -5,10 +5,39 @@ import random
 import operator
 import copy
 import argparse
-
+#import pdb
 def invert_sequence(sequence):
     inverted_sequence=sequence[::-1]
-    return(inverted_sequence)
+
+    comp=""
+    for letter in inverted_sequence:
+        if letter == "A":
+            comp +="T"
+        elif letter == "a":
+            comp +="t"
+
+        elif letter == "T":
+            comp += "A"
+        elif letter == "t":
+            comp += "a"
+
+        elif letter == "G":
+            comp += "C"
+        elif letter == "g":
+            comp += "c"
+
+        elif letter == "C":
+            comp += "G"
+        elif letter == "c":
+            comp += "g"
+
+        else:
+            comp += letter
+
+
+
+
+    return(comp)
 
 def check_overlap(structural_variant,haplotype,min_distance):
     overlap=False
@@ -226,9 +255,9 @@ def main(args):
                     if variant[-1] == "DEL":
                         #deletion, skip the sequence between start and stop
                         pass
-                    #elif variant[-1] == "INV":
-                    #    #inversion, add the inverted sequnce between start and stop to the genom
-                    #    genome += invert_sequence(sequence[chromosome][start:end])
+                    elif variant[-1] == "INV":
+                        #inversion, add the inverted sequnce between start and stop to the genom
+                        genome += invert_sequence(sequence[chromosome][start:end])
                     elif variant[-1] == "TDUP":
                         #tdup, add an extra copy of start-stop directly after the first copy
                         genome += sequence[chromosome][start:end]
