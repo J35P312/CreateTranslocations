@@ -49,5 +49,5 @@ command=["samtools","sort","-@",args.threads,args.prefix+".bam",args.prefix+"_so
 tmp=subprocess.check_output(command);
 os.remove(args.prefix+".bam")
 #bamtools index
-command=["bamtools","index","-in",args.prefix+"_sorted.bam"]
+command=["samtools","index",args.prefix+"_sorted.bam"]
 tmp=subprocess.check_output(command);
