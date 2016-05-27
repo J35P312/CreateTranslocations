@@ -41,7 +41,7 @@ command=["bwa mem -t " + args.threads + " -R \'@RG\\tID:CreateTranslocations\\tS
 print(command)
 tmp=subprocess.check_output(command, shell = True);
 #use samtools view to convert sam to bam
-command=["samtools view -b -@ " +args.threads + " -S " + args.prefix+".sam > " + args.prefix+".bam"]
+command=["samtools view -h -S " + args.prefix+".sam | awk  \' /IIIIIIIIIIIIIIIIIIIIIIIIII/ { gsub(\"IIIIII\", \"@@@@@@\"); print $0; next } { print } \' | samtools view -b -h -@ " +args.threads + " -S - > " + args.prefix+".bam" ]
 tmp=subprocess.check_output(command,shell = True);
 os.remove(args.prefix+".sam")
 #samtools sort
