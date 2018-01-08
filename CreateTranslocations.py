@@ -130,11 +130,15 @@ def generate_variant_lists(data,chromosome_length,sequence):
                 testEnd=len(sequence[chromosomeB])-1
             if "N" in sequence[chromosomeB][testPos:testEnd]:    
                 continue
-            
-            structural_variant=[[chromosome,chromosomeB,startA,startB,[startA,endB,invert],"BND"]]
+
+            GT="0/1"            
+            if homozygous:
+                GT="1/1"         
+        
+            structural_variant=[[chromosome,chromosomeB,startA,startB,[startA,endB,invert],"BND",GT]]
             #if the variant is a balanced translocation, a deletion is generated on chromosome B       
             if variant_type == "balanced_inter_chromosomal_translocations":
-                structural_variant += [[chromosomeB,chromosomeB,startB,endB,"1","DEL"]]
+                structural_variant += [[chromosomeB,chromosomeB,startB,endB,"1","DEL",GT]]
         else:
             posA=random.randint(0, chromosome_length[chromosome])
             length=random.randint(data[variant_type][1], data[variant_type][2])
@@ -143,7 +147,12 @@ def generate_variant_lists(data,chromosome_length,sequence):
                 var ="INV"
             elif variant_type is "tandem_duplications":
                 var="TDUP"
-            structural_variant=[[chromosome,chromosome,posA,posA+length,"1",var]]
+
+            GT="0/1"            
+            if homozygous:
+                GT="1/1"
+
+            structural_variant=[[chromosome,chromosome,posA,posA+length,"1",var,GT]]
         #make sure that the variant do not overlap any other variant
         if homozygous:
             overlap=check_overlap(structural_variant,genome[0],data["min_distance"])
@@ -210,11 +219,12 @@ def main(args):
     simulated_bases=0
     for chromosome in split_reference:
         content=chromosome.split("\n",1)
-        if content[0] in data["chromosomes"]:
+        contig=content[0].split()[0]
+        if contig in data["chromosomes"]:
             #print(content)
-            sequence[content[0]]=content[1].replace("\n","")
-            chromosome_len[content[0]]=len(sequence[content[0]])
-            simulated_bases += len(sequence[content[0]])
+            sequence[contig]=content[1].replace("\n","")
+            chromosome_len[contig]=len(sequence[contig])
+            simulated_bases += len(sequence[contig])
     del split_reference
     #generate the variants
     haplotypes,collapsed_variants=generate_variant_lists(data,chromosome_len,sequence)
@@ -226,14 +236,14 @@ def main(args):
                 if variants[0] <= variants[1]:
                     #each translocation have 2 breakpoints
                     if(variants[5] == "BND"):
-                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[2]),str(variants[3]),str(variants[3]),variants[5],"1"])+"\n")
-                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[2]),str(variants[4][1]),str(variants[4][1]),variants[5],"1"])+"\n")
+                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[2]),str(variants[3]),str(variants[3]),variants[5],"1",variants[-1]])+"\n")
+                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[2]),str(variants[4][1]),str(variants[4][1]),variants[5],"1",variants[-1]])+"\n")
                     else:
-                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[3]),str(variants[2]),str(variants[3]),variants[5],"1"])+"\n")
+                        output_db.write( "\t".join([variants[0],variants[1],str(variants[2]),str(variants[3]),str(variants[2]),str(variants[3]),variants[5],"1",variants[-1]])+"\n")
                 else:
                     if(variants[5] == "BND"):
-                        output_db.write( "\t".join([variants[1],variants[0],str(variants[3]),str(variants[3]),str(variants[2]),str(variants[2]),variants[5],"1"])+"\n")
-                        output_db.write( "\t".join([variants[1],variants[0],str(variants[4][1]),str(variants[4][1]),str(variants[2]),str(variants[2]),variants[5],"1"])+"\n")
+                        output_db.write( "\t".join([variants[1],variants[0],str(variants[3]),str(variants[3]),str(variants[2]),str(variants[2]),variants[5],"1",variants[-1]])+"\n")
+                        output_db.write( "\t".join([variants[1],variants[0],str(variants[4][1]),str(variants[4][1]),str(variants[2]),str(variants[2]),variants[5],"1",variants[-1]])+"\n")
                     
                 a=1
     del collapsed_variants
@@ -277,9 +287,4 @@ def main(args):
                 genome += sequence[chromosome][previous_bnd:]
             output_fa.write(genome+"\n")
     return(simulated_bases)    
-#parser = argparse.ArgumentParser("""This scripts generates structural variants on the input genome according to the config file""")
-#parser.add_argument('--fa', type=str, required = True,help="the path to the reference fasta file")
-#parser.add_argument('--config', type=str, required = True,help="the path to the config file")
-#parser.add_argument('--prefix', type=str, required = True,help="the prefix of the output files")
-#args = parser.parse_args()
-#main(args)
+

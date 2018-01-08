@@ -30,24 +30,24 @@ print("simulating reads of haplotype 2")
 command=[os.path.join(sys.argv[0].replace("wrapper.py",""),"wgsim/wgsim"),"-d",args.insert_size,"-e","0.0001","-s",args.insert_std,"-N",str(n),"-1",args.read_length,"-2",args.read_length,args.prefix+"_haplotype_2.fa",args.prefix+"_haplotype_2_r1.fq",args.prefix+"_haplotype_2_r2.fq"]
 print(" ".join(command))
 tmp=subprocess.check_output(command);
-#append the fastq files
-os.system("cat " + args.prefix+"_haplotype_1_r1.fq" + " " + args.prefix+"_haplotype_2_r1.fq" + " > " + args.prefix+"_r1.fq")
-os.remove(args.prefix+"_haplotype_1_r1.fq");os.remove(args.prefix+"_haplotype_2_r1.fq")
 
-os.system("cat " + args.prefix+"_haplotype_1_r2.fq" +" " + args.prefix+"_haplotype_2_r2.fq" + " > " + args.prefix+"_r2.fq")
+#append the fastq files
+os.system("cat {}_haplotype_1_r1.fq {}_haplotype_2_r1.fq > {}_r1.fq".format(args.prefix,args.prefix,args.prefix))
+os.remove(args.prefix+"_haplotype_1_r1.fq");os.remove(args.prefix+"_haplotype_2_r1.fq")
+os.system("cat {}_haplotype_1_r2.fq {}_haplotype_2_r2.fq > {}_r2.fq".format(args.prefix,args.prefix,args.prefix))
 os.remove(args.prefix+"_haplotype_1_r2.fq");os.remove(args.prefix+"_haplotype_2_r2.fq")
+
 #mapping using bwa
-command=["bwa mem -t " + args.threads + " -R \'@RG\\tID:CreateTranslocations\\tSM:WGSIM\' "+args.fa+" "+ args.prefix+"_r1.fq " + args.prefix+"_r2.fq > " + args.prefix+".sam"]
-print(command)
-tmp=subprocess.check_output(command, shell = True);
-#use samtools view to convert sam to bam
-command=["samtools view -h -S " + args.prefix+".sam | awk  \' /IIIIIIIIIIIIIIIIIIIIIIIIII/ { gsub(\"IIIIII\", \"@@@@@@\"); print $0; next } { print } \' | samtools view -b -h -@ " +args.threads + " -S - > " + args.prefix+".bam" ]
-tmp=subprocess.check_output(command,shell = True);
-os.remove(args.prefix+".sam")
+os.system("bwa mem -t " + args.threads + " -R \'@RG\\tID:CreateTranslocations\\tSM:WGSIM\' "+args.fa+" "+ args.prefix+"_r1.fq " + args.prefix+"_r2.fq | " + "samtools view -h -S - | awk  \' /IIIIIIIIIIIIIIIIIIIIIIIIII/ { gsub(\"IIIIII\", \"@@@@@@\"); print $0; next } { print } \' | samtools view -b -h -@ " +args.threads + " -S - > " + args.prefix+".bam" )
+
 #samtools sort
-command=["samtools","sort","-@",args.threads,args.prefix+".bam",args.prefix+"_sorted"]
-tmp=subprocess.check_output(command);
+try:
+    command=["samtools","sort","-@",args.threads,args.prefix+".bam",args.prefix+"_sorted"]
+    tmp=subprocess.check_output(command);
+except:
+    command=["samtools","sort","-@",args.threads,args.prefix+".bam",">",args.prefix+"_sorted.bam"]
+    os.system(" ".join(command))
+
 os.remove(args.prefix+".bam")
 #bamtools index
-command=["samtools","index",args.prefix+"_sorted.bam"]
-tmp=subprocess.check_output(command);
+os.system("samtools index {}_sorted.bam".format(args.prefix))
