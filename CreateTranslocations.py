@@ -220,6 +220,7 @@ def main(args):
     for chromosome in split_reference:
         content=chromosome.split("\n",1)
         contig=content[0].split()[0]
+        print contig
         if contig in data["chromosomes"]:
             #print(content)
             sequence[contig]=content[1].replace("\n","")
@@ -259,6 +260,8 @@ def main(args):
                 print chromosome
                 previous_bnd=0
                 output_fa.write(">"+chromosome+"\n")
+                if not haplotype[chromosome]:
+                    output_fa.write(sequence[chromosome])
                 for variant in sorted(haplotype[chromosome], key=operator.itemgetter(2)):
                     start=variant[2];end=variant[3]
                     genome += sequence[chromosome][previous_bnd:start]

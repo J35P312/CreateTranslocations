@@ -9,10 +9,10 @@ parser = argparse.ArgumentParser("""This scripts generates a simulated bam file 
 parser.add_argument('--fa', type=str, required = True,help="the path to the reference fasta file")
 parser.add_argument('--config', type=str, required = True,help="the path to the config file")
 parser.add_argument('--prefix', type=str, required = True,help="the prefix of the output files")
-parser.add_argument('--insert_size',default="500", type=str,help="library insert size")
+parser.add_argument('--insert_size',default="300", type=str,help="library insert size")
 parser.add_argument('--read_length',default="150", type=str,help="library read lenght")
-parser.add_argument('--insert_std',default="1200", type=str,help="insert size std")
-parser.add_argument('--coverage',default=40, type=int,help="mean coverage")
+parser.add_argument('--insert_std',default="100", type=str,help="insert size std")
+parser.add_argument('--coverage',default=20, type=float,help="mean coverage")
 parser.add_argument('--threads',default="1", type=str,help="the number of threads used during the bwa mapping step")
 args = parser.parse_args()
 
