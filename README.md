@@ -1,4 +1,6 @@
-# CreateTranslocations
+# CreateSV
+A tool for generating a simulated bam file containing SV
+
 1. use the install script to download wgsim and SURVIVOR, make sure to have bwa,samtools, and sambamba and installed
 2. run SURVIVOR to create a config file : ./SURVIVOR/Debug/SURVIVOR simSV config.txt
 3. edit the config.txt file to suit your needs
