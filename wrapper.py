@@ -45,4 +45,4 @@ os.system("cat {}_haplotype_1_r2.fq {}_haplotype_2_r2.fq > {}_r2.fq".format(args
 os.remove(args.prefix+"_haplotype_1_r2.fq");os.remove(args.prefix+"_haplotype_2_r2.fq")
 
 #mapping using bwa
-os.system("bwa mem -t " + args.threads + " -R \'@RG\\tID:CreateTranslocations\\tSM:WGSIM\' "+args.fa+" "+ args.prefix+"_r1.fq " + args.prefix+"_r2.fq | " + "samtools view -h -S - | awk  \' /IIIIIIIIIIIIIIIIIIIIIIIIII/ { gsub(\"IIIIII\", \"@@@@@@\"); print $0; next } { print } \' | samtools view -b -h -@ " +args.threads + " -S - | sambamba sort -m 10G  /dev/stdin -o {}.bam".format(args.prefix) )
+os.system("bwa mem -t " + args.threads + " -R \'@RG\\tID:CreateTranslocations\\tSM:WGSIM\' "+args.fa+" "+ args.prefix+"_r1.fq " + args.prefix+"_r2.fq | " + "samtools view -h -S - | awk  \' /IIIIIIIIIIIIIIIIIIIIIIIIII/ { gsub(\"IIIIII\", \"@@@@@@\"); print $0; next } { print } \' | samtools view -b -h -@ " +args.threads + " -S - | sambamba sort -t {} -m 20G  /dev/stdin -o {}.bam".format(args.threads,args.prefix) )

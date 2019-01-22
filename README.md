@@ -1,12 +1,12 @@
 # CreateTranslocations
-1. use the install script to download wgsim and SURVIVOR, make sure to have bwa,samtools and bamtools installed
+1. use the install script to download wgsim and SURVIVOR, make sure to have bwa,samtools, and sambamba and installed
 2. run SURVIVOR to create a config file : ./SURVIVOR/Debug/SURVIVOR simSV config.txt
 3. edit the config.txt file to suit your needs
 4. run wrapper.py
 
 # dependencies
 
-    bwa and samtools
+    bwa, sambamba and samtools
 
 # Command line
 
